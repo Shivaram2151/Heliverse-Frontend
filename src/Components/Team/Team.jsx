@@ -11,9 +11,9 @@ export const Team = () => {
   const teamData = location.state?.teamData || null;
   const teamName = location.state?.teamName || null;
   const [userData, setUserData] = useState();
-  const { loading } = useSelector((store) => store.teams);
+  const { loading } = useSelector((store) => store.users);
   const dispatch = useDispatch();
-
+  console.log(loading);
   useEffect(() => {
     const fetchData = async () => {
       if (teamData && teamData.users) {
