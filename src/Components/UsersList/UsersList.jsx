@@ -7,6 +7,7 @@ import {
   DialogTitle,
   Grid,
   TextField,
+  CircularProgress,
 } from "@mui/material";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
@@ -15,10 +16,10 @@ import { fetchUsers } from "../../Store/UserState/UsersAction";
 import { Pagination } from "../Pagination/Pagination";
 import { Button } from "@mui/joy";
 import { createTeam } from "../../Store/TeamState/TeamAction";
-import { useLocation, useNavigate } from "react-router";
+import { useNavigate } from "react-router";
 
 export const UsersList = () => {
-  const { users } = useSelector((store) => store.users);
+  const { users, loading } = useSelector((store) => store.users);
   const [userData, setUserData] = useState([]);
   const [isSubmit, setIsSubmit] = useState(false);
   const dispatch = useDispatch();
@@ -35,6 +36,7 @@ export const UsersList = () => {
   const [teamName, setTeamName] = useState("-");
   const [teamData, setTeamData] = useState([]);
   const [pendingUser, setPendingUser] = useState("");
+  const [hasFetchedUsers, setHasFetchedUsers] = useState(false);
 
   const navigate = useNavigate();
   const handleClickOpen = () => {
@@ -50,6 +52,14 @@ export const UsersList = () => {
     setIsSubmit(false);
   };
   const limit = 20;
+
+  useEffect(() => {
+    if (userData.length === 0 && !hasFetchedUsers) {
+      toast.success("Successfully Fetched Users.");
+      setHasFetchedUsers(true);
+    }
+  }, [userData, hasFetchedUsers]);
+
   useEffect(() => {
     dispatch(
       fetchUsers({
@@ -57,7 +67,6 @@ export const UsersList = () => {
         limit: limit,
       })
     );
-    toast.success("Successfully Fetched Users.");
   }, [currentPage]);
   useEffect(() => {
     setUserData(users);
@@ -106,16 +115,6 @@ export const UsersList = () => {
   }, [genderFilter, users]);
 
   useEffect(() => {
-    // if (availabilityFilter) {
-    //   const updatedUsers = userData.filter((user) =>
-    //     user.available ? true : false
-    //   );
-    //   console.log();
-    //   setFilteredUsers(updatedUsers);
-    // } else {
-    //   setFilteredUsers(users);
-    // }
-
     if (availabilityFilter === "") {
       setFilteredUsers(users);
     } else {
@@ -299,16 +298,28 @@ export const UsersList = () => {
             </select>
           </Grid>
         </Grid>
-        <Grid container spacing={2}>
-          {filteredUsers?.map((user, i) => (
-            <Grid key={i} item xs={12} sm={6} md={4} lg={3}>
-              <UsersCard
-                user={user}
-                handleUserSelect={handleUserSelect}
-                selectedUsers={selectedUsers}
-              />
+        <Grid
+          container
+          spacing={2}
+          justifyItems={"center"}
+          alignItems="center"
+          justifyContent={"center"}
+        >
+          {loading ? (
+            <Grid item xs={12} textAlign="center">
+              <CircularProgress />
             </Grid>
-          ))}
+          ) : (
+            filteredUsers?.map((user, i) => (
+              <Grid key={i} item xs={8} sm={5} md={4} lg={3}>
+                <UsersCard
+                  user={user}
+                  handleUserSelect={handleUserSelect}
+                  selectedUsers={selectedUsers}
+                />
+              </Grid>
+            ))
+          )}
         </Grid>
         <Grid container>
           <Grid item xs={12} md={12} lg={12} alignSelf={"center"}>
@@ -319,7 +330,7 @@ export const UsersList = () => {
             />
           </Grid>
         </Grid>
-        <ToastContainer />
+        <ToastContainer autoClose={1000} />
       </Grid>
       <React.Fragment>
         <Dialog

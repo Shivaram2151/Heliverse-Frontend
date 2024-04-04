@@ -1,4 +1,4 @@
-import { Route, Router, Routes } from "react-router";
+import { Route, Routes } from "react-router";
 import "./App.css";
 import { UsersList } from "./Components/UsersList/UsersList";
 import "bootstrap/dist/css/bootstrap.min.css";

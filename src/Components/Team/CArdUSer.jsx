@@ -1,17 +1,5 @@
 import React from "react";
-import {
-  Avatar,
-  Box,
-  Button,
-  ButtonGroup,
-  Card,
-  CardActions,
-  CardContent,
-  CardOverflow,
-  Chip,
-  Typography,
-} from "@mui/joy";
-import { Grid } from "@mui/material";
+import { Avatar, Box, Card, CardContent, Chip, Typography } from "@mui/joy";
 const CArdUSer = ({ user }) => {
   return (
     <Card

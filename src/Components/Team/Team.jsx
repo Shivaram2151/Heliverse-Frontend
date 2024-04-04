@@ -1,17 +1,19 @@
-import { Grid, Typography } from "@mui/joy";
+import { Grid } from "@mui/joy";
 import React, { useEffect, useState } from "react";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { useLocation } from "react-router";
 import { fetchUserById } from "../../Store/UserState/UsersAction";
 import CArdUSer from "./CArdUSer";
 import { ToastContainer, toast } from "react-toastify";
+import { CircularProgress } from "@mui/material";
 export const Team = () => {
   const location = useLocation();
   const teamData = location.state?.teamData || null;
-
   const teamName = location.state?.teamName || null;
   const [userData, setUserData] = useState();
+  const { loading } = useSelector((store) => store.teams);
   const dispatch = useDispatch();
+
   useEffect(() => {
     const fetchData = async () => {
       if (teamData && teamData.users) {
@@ -38,11 +40,17 @@ export const Team = () => {
         <h1 className="TeamName">Team Name: {teamName}</h1>
       </div>
       <Grid container>
-        {userData?.map((user) => (
-          <Grid key={user} item xs={12} sm={6} md={4} lg={3}>
-            <CArdUSer user={user} />
+        {loading ? (
+          <Grid item xs={12} textAlign="center">
+            <CircularProgress />
           </Grid>
-        ))}
+        ) : (
+          userData?.map((user) => (
+            <Grid key={user} item xs={12} sm={6} md={4} lg={3}>
+              <CArdUSer user={user} />
+            </Grid>
+          ))
+        )}
       </Grid>
 
       <ToastContainer />
